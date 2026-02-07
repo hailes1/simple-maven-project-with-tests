@@ -4,13 +4,30 @@ pipeline {
         stage('Run Joke Script') {
             steps {
                 sh '''
+                #!/bin/bash
+
+                # Step a & b: Send GET request and save raw JSON
+                curl -s "https://v2.jokeapi.dev/joke/Any?type=single" -o joke.json
+
+                # Step c: Extract the joke message and save it
                 jq -r '.joke' joke.json > joke.message
+
+                # Step d: Count number of words in the joke
                 word_count=$(wc -w < joke.message)
+
+                # Step e: Show the joke
+                echo "Joke:"
+                cat joke.message
+                echo
+
+                # Step f: Print result based on word count
                 if [ "$word_count" -gt 5 ]; then
-                  echo "Joke has more than 5 words"
+                echo "Joke has more than 5 words"
                 else
-                  echo "Joke is too short"
+                echo "Joke is too short"
                 fi
+
+                echo "Word count: $word_count"
                 '''
             }
         }
