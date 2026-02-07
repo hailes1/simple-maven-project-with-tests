@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+    stages {
+        stage('Run Joke Script') {
+            steps {
+                sh '''
+                sleep 10000
+                jq -r '.joke' joke.json > joke.message
+                word_count=$(wc -w < joke.message)
+                if [ "$word_count" -gt 5 ]; then
+                  echo "Joke has more than 5 words"
+                else
+                  echo "Joke is too short"
+                fi
+                '''
+            }
+        }
+    }
+}
